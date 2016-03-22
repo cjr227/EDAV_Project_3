@@ -1,0 +1,397 @@
+<!-- Sankey generated in R 3.2.1 by googleVis 0.5.10 package -->
+<!-- Tue Mar 22 18:15:23 2016 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataSankeyID4bc58107034 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "DISINFECTANTS",
+"ANEMIA",
+2 
+],
+[
+ "DISINFECTANTS",
+"EYE PROBLEMS",
+2 
+],
+[
+ "DISINFECTANTS",
+"NERVOUS SYSTEM EFFECTS",
+1 
+],
+[
+ "DISINFECTANTS",
+"NOSE IRRITATION",
+2 
+],
+[
+ "DISINFECTANTS",
+"STOMACH PROBLEMS",
+2 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"ANEMIA",
+1 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"CANCER",
+3 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"KIDNEY PROBLEMS",
+1 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"LIVER PROBLEMS",
+1 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"NERVOUS SYSTEM EFFECTS",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"ALLERGIC DERMATITIS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"BLOOD PROBLEMS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"BLUE-BABY SYNDROME",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"BONE DISEASE",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"CANCER",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"CIRCULATORY PROBLEMS",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"DECREASE IN BLOOD SUGAR",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"DELAYS IN PHYSICAL OR MENTAL DEVELOPMENT",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"FINGERNAIL LOSS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"GASTROINTESTINAL DISTRESS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"HAIR LOSS",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"HIGH BLOOD PRESSURE",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"INCREASE IN BLOOD CHOLESTEROL",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"INCREASE IN BLOOD PRESSURE",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"INTESTINAL LESIONS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"INTESTINAL POLYPS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"INTESTINE PROBLEMS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"KIDNEY PROBLEMS",
+5 
+],
+[
+ "INORGANIC CHEMICALS",
+"LIVER PROBLEMS",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"NERVOUS SYSTEM DAMAGE",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"NUMBNESS IN FINGERS OR TOES",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"SHORTNESS OF BREATH",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"SKIN DAMAGE",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"THYROID PROBLEMS",
+1 
+],
+[
+ "MICROORGANISMS",
+"GASTROINTESTINAL ILLNESS",
+4 
+],
+[
+ "MICROORGANISMS",
+"LEGIONNAIRE'S DISEASE",
+1 
+],
+[
+ "MICROORGANISMS",
+"NONE",
+2 
+],
+[
+ "ORGANIC CHEMICALS",
+"ADRENAL GLAND PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"ANEMIA",
+3 
+],
+[
+ "ORGANIC CHEMICALS",
+"BLOOD PROBLEMS",
+4 
+],
+[
+ "ORGANIC CHEMICALS",
+"CANCER",
+23 
+],
+[
+ "ORGANIC CHEMICALS",
+"CARDIOVASCULAR SYSTEM PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"CATARACTS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"CHANGES IN ADRENAL GLANDS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"CIRCULATORY PROBLEMS",
+3 
+],
+[
+ "ORGANIC CHEMICALS",
+"DECREASE IN BLOOD PLATELETS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"EYE PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"IMMUNE SYSTEM PROBLEMS",
+2 
+],
+[
+ "ORGANIC CHEMICALS",
+"INTESTINE PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"KIDNEY PROBLEMS",
+17 
+],
+[
+ "ORGANIC CHEMICALS",
+"LIVER PROBLEMS",
+30 
+],
+[
+ "ORGANIC CHEMICALS",
+"NERVOUS SYSTEM DAMAGE",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"NERVOUS SYSTEM EFFECTS",
+7 
+],
+[
+ "ORGANIC CHEMICALS",
+"REPRODUCTIVE PROBLEMS",
+13 
+],
+[
+ "ORGANIC CHEMICALS",
+"SKIN CHANGES",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"SPLEEN PROBLEMS",
+2 
+],
+[
+ "ORGANIC CHEMICALS",
+"STOMACH PROBLEMS",
+4 
+],
+[
+ "ORGANIC CHEMICALS",
+"THYMUS GLAND PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"THYROID PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"WEIGHT LOSS",
+1 
+],
+[
+ "RADIONUCLIDES",
+"CANCER",
+4 
+],
+[
+ "RADIONUCLIDES",
+"KIDNEY PROBLEMS",
+1 
+] 
+];
+data.addColumn('string','ContaminantType');
+data.addColumn('string','PotentialHealthEffect');
+data.addColumn('number','freq');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartSankeyID4bc58107034() {
+var data = gvisDataSankeyID4bc58107034();
+var options = {};
+options["width"] =   1000;
+options["height"] =    600;
+options["sankey"] = {link:{color:{fill:'lightblue'}}};
+
+
+    var chart = new google.visualization.Sankey(
+    document.getElementById('SankeyID4bc58107034')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "sankey";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartSankeyID4bc58107034);
+})();
+function displayChartSankeyID4bc58107034() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartSankeyID4bc58107034"></script>
+ 
+<!-- divChart -->
+  
+<div id="SankeyID4bc58107034" 
+  style="width: 1000; height: 600;">
+</div>
