@@ -1,0 +1,302 @@
+<!-- Sankey generated in R 3.2.1 by googleVis 0.5.10 package -->
+<!-- Fri Mar 25 19:42:05 2016 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataSankeyID1b005a353cc0 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "DISINFECTANTS",
+"BLOOD PROBLEMS",
+2 
+],
+[
+ "DISINFECTANTS",
+"CIRCULATORY PROBLEMS",
+2 
+],
+[
+ "DISINFECTANTS",
+"EYE PROBLEMS",
+2 
+],
+[
+ "DISINFECTANTS",
+"NERVOUS SYSTEM EFFECTS",
+1 
+],
+[
+ "DISINFECTANTS",
+"STOMACH PROBLEMS",
+2 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"BLOOD PROBLEMS",
+1 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"CANCER",
+3 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"KIDNEY PROBLEMS",
+1 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"LIVER PROBLEMS",
+1 
+],
+[
+ "DISINFECTION BYPRODUCTS",
+"NERVOUS SYSTEM EFFECTS",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"BLOOD PROBLEMS",
+7 
+],
+[
+ "INORGANIC CHEMICALS",
+"BONE DISEASE",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"CANCER",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"CIRCULATORY PROBLEMS",
+4 
+],
+[
+ "INORGANIC CHEMICALS",
+"DELAYS IN PHYSICAL OR MENTAL DEVELOPMENT",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"ENDOCRINE SYSTEM PROBLEMS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"FINGERNAIL LOSS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"GASTROINTESTINAL PROBLEMS",
+4 
+],
+[
+ "INORGANIC CHEMICALS",
+"HAIR LOSS",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"KIDNEY PROBLEMS",
+5 
+],
+[
+ "INORGANIC CHEMICALS",
+"LIVER PROBLEMS",
+2 
+],
+[
+ "INORGANIC CHEMICALS",
+"NERVOUS SYSTEM EFFECTS",
+1 
+],
+[
+ "INORGANIC CHEMICALS",
+"SKIN PROBLEMS",
+3 
+],
+[
+ "MICROORGANISMS",
+"CIRCULATORY PROBLEMS",
+1 
+],
+[
+ "MICROORGANISMS",
+"GASTROINTESTINAL PROBLEMS",
+4 
+],
+[
+ "MICROORGANISMS",
+"NONE",
+2 
+],
+[
+ "ORGANIC CHEMICALS",
+"BLOOD PROBLEMS",
+8 
+],
+[
+ "ORGANIC CHEMICALS",
+"CANCER",
+23 
+],
+[
+ "ORGANIC CHEMICALS",
+"CARDIOVASCULAR SYSTEM PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"CIRCULATORY PROBLEMS",
+3 
+],
+[
+ "ORGANIC CHEMICALS",
+"ENDOCRINE SYSTEM PROBLEMS",
+4 
+],
+[
+ "ORGANIC CHEMICALS",
+"EYE PROBLEMS",
+2 
+],
+[
+ "ORGANIC CHEMICALS",
+"GASTROINTESTINAL PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"IMMUNE SYSTEM PROBLEMS",
+4 
+],
+[
+ "ORGANIC CHEMICALS",
+"KIDNEY PROBLEMS",
+17 
+],
+[
+ "ORGANIC CHEMICALS",
+"LIVER PROBLEMS",
+30 
+],
+[
+ "ORGANIC CHEMICALS",
+"NERVOUS SYSTEM EFFECTS",
+8 
+],
+[
+ "ORGANIC CHEMICALS",
+"REPRODUCTIVE PROBLEMS",
+13 
+],
+[
+ "ORGANIC CHEMICALS",
+"SKIN PROBLEMS",
+1 
+],
+[
+ "ORGANIC CHEMICALS",
+"STOMACH PROBLEMS",
+4 
+],
+[
+ "ORGANIC CHEMICALS",
+"WEIGHT LOSS",
+1 
+],
+[
+ "RADIONUCLIDES",
+"CANCER",
+4 
+],
+[
+ "RADIONUCLIDES",
+"KIDNEY PROBLEMS",
+1 
+] 
+];
+data.addColumn('string','ContaminantType');
+data.addColumn('string','PotentialHealthEffect');
+data.addColumn('number','freq');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartSankeyID1b005a353cc0() {
+var data = gvisDataSankeyID1b005a353cc0();
+var options = {};
+options["width"] =   1000;
+options["height"] =    600;
+options["sankey"] = {link:{color:{fill:'lightblue'}}};
+
+
+    var chart = new google.visualization.Sankey(
+    document.getElementById('SankeyID1b005a353cc0')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "sankey";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartSankeyID1b005a353cc0);
+})();
+function displayChartSankeyID1b005a353cc0() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartSankeyID1b005a353cc0"></script>
+ 
+<!-- divChart -->
+  
+<div id="SankeyID1b005a353cc0" 
+  style="width: 1000; height: 600;">
+</div>
