@@ -54,7 +54,23 @@
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 ```
+
 ```{r libraries}
+package_list <- c("lattice","grid","maps",
+                  "mapdata","sp","maptools",
+                  "leaflet","jsonlite",
+                  "reshape","rpivotTable","lsr","colorspace","scales",
+                  "DBI","plotly","devtools","Rcpp",
+                  'plyr', 'rCharts',"googleVis",'openxlsx','sqldf','rvest')
+for(i in 1:length(package_list)){
+  if(package_list[i]=="rCharts"){
+    devtools::install_github("ramnathv/rCharts")
+  }
+  else if(!(package_list[i] %in% installed.packages())){
+    install.packages(package_list[i])
+  } 
+}
+
 library(lattice)
 library(grid)
 library(maps)
@@ -73,6 +89,9 @@ library(plotly)
 library(devtools)
 library(Rcpp)
 library(plyr)
+library(openxlsx)
+library(sqldf)
+library(rvest)
 require(rCharts)
 require(googleVis)
 ```
@@ -84,32 +103,91 @@ require(googleVis)
 
 #### This plot has been made interactive, allowing the user to scroll in and out. Please note that when you click on a site, a popup pulls up that shows you various atributes of the site.
 <center>
+
+```{r include=FALSE}
+# Load raw Reported Violations file
+viol_raw <- read.xlsx("data/reported_violation.xlsx", sheet = 1)
+
+# Specify column names
+names(viol_raw) <- c("State","SysOrPop","Water.System.Type.CWS",
+                     "Water.System.Type.NTNCWS","Water.System.Type.TNCWS",
+                     "Water.System.Type.Total",
+                     "Source.of.Water.Ground","Source.of.Water.Surface",
+                     "Source.of.Water.Total","CWSs.with.Reported.Health.Based.Violations.Systems",
+                     "CWSs.with.Reported.Health.Based.Violations.Percent")
+# Remove unnecessary rows
+viol_enr <- viol_raw[-c(1,104:105),]
+
+# Fill in state values
+for(i in 1:nrow(viol_enr)){
+  if(is.na(viol_enr$State[i])){
+    viol_enr$State[i] <- viol_enr$State[i-1]
+  }
+}
+
+# Rearrange data
+viol <- sqldf("SELECT s.State
+             ,s.'Water.System.Type.CWS' AS 'Systems.Water.System.Type.CWS' 
+             ,s.'Water.System.Type.NTNCWS' AS 'Systems.Water.System.Type.NTNCWS'
+             ,s.'Water.System.Type.TNCWS' AS 'Systems.Water.System.Type.TNCWS'
+             ,s.'Water.System.Type.Total' AS 'Systems.Water.System.Type.Total'
+             ,s.'Source.of.Water.Ground' AS 'Systems.Source.of.Water.Ground' 
+             ,s.'Source.of.Water.Surface' AS 'Systems.Source.of.Water.Surface'
+             ,s.'Source.of.Water.Total' AS 'Systems.Source.of.Water.Total'
+             ,t.'Water.System.Type.CWS' AS 'Population.Water.System.Type.CWS' 
+             ,t.'Water.System.Type.NTNCWS' AS 'Population.Water.System.Type.NTNCWS'
+             ,t.'Water.System.Type.TNCWS' AS 'Population.Water.System.Type.TNCWS'
+             ,t.'Water.System.Type.Total' AS 'Population.Water.System.Type.Total'
+             ,t.'Source.of.Water.Ground' AS 'Population.Source.of.Water.Ground' 
+             ,t.'Source.of.Water.Surface' AS 'Population.Source.of.Water.Surface'
+             ,t.'Source.of.Water.Total' AS 'Population.Source.of.Water.Total'
+             ,s.'CWSs.with.Reported.Health.Based.Violations.Systems' AS 'Systems.CWSs.with.Reported.Health.Based.Violations.Systems'
+             ,s.'CWSs.with.Reported.Health.Based.Violations.Percent' AS 'Systems.CWSs.with.Reported.Health.Based.Violations.Percent'
+             ,t.'CWSs.with.Reported.Health.Based.Violations.Systems' AS 'Population.CWSs.with.Reported.Health.Based.Violations.Systems'
+             ,t.'CWSs.with.Reported.Health.Based.Violations.Percent' AS 'Population.CWSs.with.Reported.Health.Based.Violations.Percent'
+         FROM viol_enr s
+         JOIN viol_enr t
+           ON s.State = t.State
+        WHERE s.SysOrPop = 'Systems'
+          AND t.SysOrPop = 'Population'")
+
+viol[is.na(viol)] <- 0 #remove NAs from dataframe and store them as 0s
+
+```
+
 ```{r include=FALSE}
 
-annualFlow<- read.csv("data/annualFlow.csv",header = T, skip = 6)
-dailyFlow<- read.csv("data/dailyFlow.csv",header = T, skip = 7)
-sampleConc<-read.csv("data/sampleConcentrations.csv", header = T, skip = 9)
-siteAttr<-read.csv("data/Site_attribute.csv", header = T, skip = 10)
-viol<-read.csv("data/reported_violation_cleaned.csv", header = T)
-viol[is.na(viol)]<-0 #remove NAs from dataframe and store them as 0s
+annualFlow <- read.csv("data/annualFlow.csv",header = T, skip = 6)
+dailyFlow <- read.csv("data/dailyFlow.csv",header = T, skip = 7)
+sampleConc <- read.csv("data/sampleConcentrations.csv", header = T, skip = 9)
+siteAttr <- read.csv("data/Site_attribute.csv", header = T, skip = 10)
+
 
 #Function that assigns a marker size based on Drainage Area
 getRadValue <- function(x) {
-  if (x>=36775) { retVal <-10}
-  else if (x>=6830) {retVal<-8}
-  else if (x>=228) {retVal<-6}
-  else retVal<-4
+  if(x >= 36775){
+    retVal <- 10
+  }
+  else if(x >= 6830){
+    retVal <- 8
+  }
+  else if(x >= 228){
+    retVal <- 6
+  }
+  else{
+    retVal <-4
+  }
   return(retVal)
 }
-#Find Marker Size for all the sites and then add that column to the data frame for mappping
-x<-vector()
-for (i in (1:nrow(siteAttr)))
-{
-  da<-siteAttr[i,"DA"]
-  x<-c(x,getRadValue(da))
+
+# Find Marker Size for all the sites and then add that column to the data frame for mapping
+x <- vector()
+for(i in (1:nrow(siteAttr))){
+  da <- siteAttr[i,"DA"]
+  x <- c(x, getRadValue(da))
 }
-x<-as.factor(x)
-siteAttr$MarkerRadius<-x #add this column to the data frame
+x <- as.factor(x)
+siteAttr$MarkerRadius <- x #add this column to the data frame
 
 ```
 
@@ -119,9 +197,9 @@ siteAttr$MarkerRadius<-x #add this column to the data frame
 #draw a map of where all the water quality test sites are
 pal <- colorFactor(c("purple", "red", "green", "orange","blue"), domain = siteAttr$SITE_TYPE)
 
-m<-leaflet()
-m<-addTiles(m)
-m<-addCircleMarkers(m
+m <- leaflet()
+m <- addTiles(m)
+m <- addCircleMarkers(m
               ,lng = siteAttr$LONGITUDE
               , lat = siteAttr$LATITUDE
               , popup = paste("Site Name:", siteAttr$SITE_QW_NAME, "<br>"
@@ -133,7 +211,7 @@ m<-addCircleMarkers(m
               , color = pal(siteAttr$SITE_TYPE)
               )
 
-m<-addLegend(m
+m <- addLegend(m
              , position = "topright"
              ,pal = pal
              , values = siteAttr$SITE_TYPE)
@@ -146,9 +224,9 @@ m
 <center>
 ```{r,fig.width=10, fig.height=8}
 #****** WITH CLUSTER OPTIONS *****
-m<-leaflet()
-m<-addTiles(m)
-m<-addCircleMarkers(m
+m <- leaflet()
+m <- addTiles(m)
+m <- addCircleMarkers(m
                     ,lng = siteAttr$LONGITUDE
                     , lat = siteAttr$LATITUDE
                     , popup = paste("Site Name:", siteAttr$SITE_QW_NAME, "<br>"
@@ -160,7 +238,7 @@ m<-addCircleMarkers(m
                     , color = pal(siteAttr$SITE_TYPE)
                     , stroke = TRUE
 )
-m<-addLegend(m
+m <- addLegend(m
              , position = "topright"
              ,pal = pal
              , values = siteAttr$SITE_TYPE)
@@ -172,36 +250,42 @@ m
 
 <center>
 
-```{r include==FALSE}
+```{r include=FALSE}
 
-AL<-read.csv("data/annualLoad.csv",skip=12)
-Site_location<-read.csv("data/Site_attribute.csv",skip=10)
-#combind data with site attribution
-Full_data<-merge(AL, Site_location)
-Full_data1<-Full_data[,c(1,3,9,14,15)]
-#get each nutrients
-nitrate_nitrite<-subset(Full_data1, CONSTIT=="NO3_NO2")
-total_nitrogen<-subset(Full_data1, CONSTIT=="TN")
-total_phosphorus<-subset(Full_data1, CONSTIT=="TP")
-ssc<-subset(Full_data1, CONSTIT=="SSC")
-#Create SSC shingle for xyplot
-tmp1<-c(0,60,120,180,max(ssc$FWC))
-SSC<-shingle(ssc$FWC, intervals=cbind( tmp1[-5], tmp1[-1] ) ) 
-#Create shingle for TP
-tmp2<-c(0,0.025,0.05,0.1,max(total_phosphorus$FWC))
-Total_Phosphorus<-shingle(total_phosphorus$FWC, intervals=cbind( tmp2[-5], tmp2[-1] ) ) 
-#Create shingle for TN
-tmp3<-c(0,0.8,2,10,max(total_nitrogen$FWC))
-Total_Nitrogen<-shingle(total_nitrogen$FWC,interval=cbind( tmp3[-5],tmp3[-1]))
-#Create shingle for NO3_NO2
-tmp4<-c(0,1,2.5,5,10,15)
-Nitrate_Nitrite<-shingle(nitrate_nitrite$FWC,cbind ( tmp4[-6],tmp4[-1])) 
+AL <- read.csv("data/annualLoad.csv",skip=12)
+Site_location <- read.csv("data/Site_attribute.csv",skip=10)
+
+# combined data with site attribution
+Full_data <- merge(AL, Site_location)
+Full_data1 <- Full_data[,c(1,3,9,14,15)]
+
+# get each nutrients
+nitrate_nitrite <- subset(Full_data1, CONSTIT=="NO3_NO2")
+total_nitrogen <- subset(Full_data1, CONSTIT=="TN")
+total_phosphorus <- subset(Full_data1, CONSTIT=="TP")
+ssc <- subset(Full_data1, CONSTIT=="SSC")
+
+# Create SSC shingle for xyplot
+tmp1 <- c(0,60,120,180,max(ssc$FWC))
+SSC <- shingle(ssc$FWC, intervals=cbind(tmp1[-5], tmp1[-1])) 
+
+# Create shingle for TP
+tmp2 <- c(0,0.025,0.05,0.1,max(total_phosphorus$FWC))
+Total_Phosphorus <- shingle(total_phosphorus$FWC, intervals=cbind(tmp2[-5], tmp2[-1] ) ) 
+# Create shingle for TN
+tmp3 <- c(0,0.8,2,10,max(total_nitrogen$FWC))
+Total_Nitrogen <- shingle(total_nitrogen$FWC,interval=cbind(tmp3[-5],tmp3[-1]))
+
+# Create shingle for NO3_NO2
+tmp4 <- c(0,1,2.5,5,10,15)
+Nitrate_Nitrite <- shingle(nitrate_nitrite$FWC,cbind(tmp4[-6],tmp4[-1])) 
 ```
 
 
 ```{r,include=FALSE}
-mymap<-map("state",fill=TRUE)
+mymap <- map("state",fill=TRUE)
 ```
+
 ```{r, fig.width=10, fig.height=8}
 MyText1 <-c("0 mg/L<SSC<60 mg/L","60 mg/L<SSC<120 mg/L","120 mg/L<SSC<180 mg/L","SSC>180 mg/L")
 xyplot(LATITUDE~LONGITUDE | SSC, data = ssc, xlab="Longitude", ylim=c(25,55),
@@ -228,7 +312,7 @@ xyplot(LATITUDE~LONGITUDE | SSC, data = ssc, xlab="Longitude", ylim=c(25,55),
 <center>
 ```{r, fig.width=10, fig.height=8}
 #Trellis plot for TP
-MyText2<-c("0 mg/L<TP<0.025 mg/L","0.025 mg/L<TP<0.05 mg/L","0.05 mg/L<TP<0.1 mg/L","TP>0.1 mg/L")
+MyText2 <- c("0 mg/L<TP<0.025 mg/L","0.025 mg/L<TP<0.05 mg/L","0.05 mg/L<TP<0.1 mg/L","TP>0.1 mg/L")
 xyplot(LATITUDE~LONGITUDE | Total_Phosphorus, data = total_phosphorus, xlab="Longitude", ylim=c(25,55),
        xlim=c(-135,-60),
        ylab = "Latitude", pch=16,cex=1,col="darkorange3",
@@ -254,7 +338,7 @@ xyplot(LATITUDE~LONGITUDE | Total_Phosphorus, data = total_phosphorus, xlab="Lon
 
 ```{r, fig.width=10, fig.height=8}
 #Trellis plot for NO3_NO2
-MyText4<-c("0 mg/L<NN<1 mg/L","1 mg/L<NN<2.5 mg/L","2.5 mg/L<NN<5 mg/L","5 mg/L<NN<10 mg/L","NN>10 mg/L")
+MyText4 <- c("0 mg/L<NN<1 mg/L","1 mg/L<NN<2.5 mg/L","2.5 mg/L<NN<5 mg/L","5 mg/L<NN<10 mg/L","NN>10 mg/L")
 xyplot(LATITUDE~LONGITUDE | Nitrate_Nitrite , data = nitrate_nitrite, xlab="Longitude", ylim=c(25,55),
        xlim=c(-135,-60),
        ylab = "Latitude", pch=16,cex=1,col="darkorange3",
@@ -274,7 +358,7 @@ xyplot(LATITUDE~LONGITUDE | Nitrate_Nitrite , data = nitrate_nitrite, xlab="Long
 
 ```{r, fig.width=10, fig.height=8}
 #Trellis plot for TN
-MyText3<-c("0 mg/L<TN<0.8 mg/L","0.8 mg/L<TN<2 mg/L","2 mg/L<TN<10 mg/L","TN>10 mg/L")
+MyText3 <- c("0 mg/L<TN<0.8 mg/L","0.8 mg/L<TN<2 mg/L","2 mg/L<TN<10 mg/L","TN>10 mg/L")
 xyplot(LATITUDE~LONGITUDE | Total_Nitrogen, data = total_nitrogen, xlab="Longitude", ylim=c(25,55),
        xlim=c(-135,-60),
        ylab = "Latitude", pch=16,cex=1,col="darkorange3",
@@ -300,6 +384,109 @@ xyplot(LATITUDE~LONGITUDE | Total_Nitrogen, data = total_nitrogen, xlab="Longitu
 
 <center>
 ```{r,include=FALSE}
+url.link <- "https://web.archive.org/web/20160321104406/https://www.epa.gov/your-drinking-water/table-regulated-drinking-water-contaminants"
+
+
+# Microorganisms
+epa.table.micro <- url.link %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="main-content"]/div[2]/div[1]/div/div/table[1]') %>%
+  html_table()
+
+epa.table.micro <- epa.table.micro[[1]]
+epa.table.micro$ContaminantType <- "MICROORGANISMS"
+
+# Disinfection Byproducts
+epa.table.disby <- url.link %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="main-content"]/div[2]/div[1]/div/div/table[2]') %>%
+  html_table()
+
+epa.table.disby <- epa.table.disby[[1]]
+epa.table.disby$ContaminantType <- "DISINFECTION BYPRODUCTS"
+
+
+# Disinfectants
+epa.table.dis <- url.link %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="main-content"]/div[2]/div[1]/div/div/table[3]') %>%
+  html_table()
+
+epa.table.dis <- epa.table.dis[[1]]
+epa.table.dis$ContaminantType <- "DISINFECTANTS"
+
+# Inorganic Chemicals
+epa.table.inorg <- url.link %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="main-content"]/div[2]/div[1]/div/div/table[4]') %>%
+  html_table()
+
+epa.table.inorg <- epa.table.inorg[[1]]
+epa.table.inorg$ContaminantType <- "INORGANIC CHEMICALS"
+
+# Organic Chemicals
+epa.table.org <- url.link %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="main-content"]/div[2]/div[1]/div/div/table[5]') %>%
+  html_table()
+
+epa.table.org <- epa.table.org[[1]]
+epa.table.org$ContaminantType <- "ORGANIC CHEMICALS"
+
+
+# Radionuclides
+epa.table.rad <- url.link %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="main-content"]/div[2]/div[1]/div/div/table[6]') %>%
+  html_table()
+
+epa.table.rad <- epa.table.rad[[1]]
+epa.table.rad$ContaminantType <- "RADIONUCLIDES"
+
+# Combine data from multiple tables
+epa.contaminants <- rbind(epa.table.micro,epa.table.disby,epa.table.dis,
+                          epa.table.inorg,epa.table.org,epa.table.rad)
+epa.contaminants$Contaminant <- toupper(epa.contaminants$Contaminant)
+
+# Label disease effects
+epa.contaminants$PotentialHealthEffect <- NA
+# Microorganisms
+here <- which(epa.contaminants$Contaminant=="CRYPTOSPORIDIUM")
+epa.contaminants$PotentialHealthEffect[here] <- "GASTROINTESTINAL ILLNESS"
+
+here <- which(epa.contaminants$Contaminant=="GIARDIA LAMBLIA")
+epa.contaminants$PotentialHealthEffect[here] <- "GASTROINTESTINAL ILLNESS"
+
+here <- which(epa.contaminants$Contaminant=="HETEROTROPHIC PLATE COUNT (HPC)")
+epa.contaminants$PotentialHealthEffect[here] <- "NONE"
+epa.contaminants$Contaminant[here] <- "HETEROTROPHIC PLATE COUNT"
+
+here <- which(epa.contaminants$Contaminant=="LEGIONELLA")
+epa.contaminants$PotentialHealthEffect[here] <- "LEGIONNAIRE'S DISEASE"
+
+here <- which(epa.contaminants$Contaminant=="TOTAL COLIFORMS (INCLUDING FECAL COLIFORM AND E. COLI)")
+epa.contaminants$PotentialHealthEffect[here] <- "NONE"
+epa.contaminants$Contaminant[here] <- "TOTAL COLIFORMS"
+
+here <- which(epa.contaminants$Contaminant=="TURBIDITY")
+epa.contaminants$PotentialHealthEffect[here] <- "GASTROINTESTINAL ILLNESS"
+
+here <- which(epa.contaminants$Contaminant=="VIRUSES (ENTERIC)")
+epa.contaminants$PotentialHealthEffect[here] <- "GASTROINTESTINAL ILLNESS"
+epa.contaminants$Contaminant[here] <- "VIRUSES"
+
+
+# Disinfection Byproducts
+
+# Disinfectants
+
+# Inorganic Chemicals
+
+# Organic Chemicals
+
+# Radionuclides
+
+
 EPA_Contaminant_Diseases <- read.csv(file="data/EPA_Water_Contaminants.csv",
 							header=TRUE,sep=",",stringsAsFactors=FALSE)
 ContaminantDiseaseCount <- count(EPA_Contaminant_Diseases, 
