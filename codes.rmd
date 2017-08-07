@@ -477,10 +477,100 @@ epa.contaminants$Contaminant[here] <- "VIRUSES"
 
 
 # Disinfection Byproducts
+here <- which(epa.contaminants$Contaminant=="BROMATE")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+
+here <- which(epa.contaminants$Contaminant=="CHLORITE")
+epa.contaminants$PotentialHealthEffect[here] <- "ANEMIA"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "NERVOUS SYSTEM EFFECTS"
+
+here <- which(epa.contaminants$Contaminant=="HALOACETIC ACIDS (HAA5)")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+epa.contaminants$Contaminant[here] <- "HALOACETIC ACIDS"
+
+here <- which(epa.contaminants$Contaminant=="TOTAL TRIHALOMETHANES (TTHMS)")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+epa.contaminants$Contaminant[here] <- "TOTAL TRIHALOMETHANES"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "NERVOUS SYSTEM EFFECTS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "KIDNEY PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "LIVER PROBLEMS"
+
+
+
 
 # Disinfectants
 
+here <- which(epa.contaminants$Contaminant=="CHLORAMINES (AS CL2)")
+epa.contaminants$PotentialHealthEffect[here] <- "ANEMIA"
+epa.contaminants$Contaminant[here] <- "CHLORAMINES"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "EYE PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "NOSE IRRITATION"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "STOMACH PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="CHLORINE (AS CL2)")
+epa.contaminants$PotentialHealthEffect[here] <- "EYE PROBLEMS"
+epa.contaminants$Contaminant[here] <- "CHLORINE"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "NOSE IRRITATION"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "STOMACH PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="CHLORINE DIOXIDE (AS CLO2)")
+epa.contaminants$PotentialHealthEffect[here] <- "ANEMIA"
+epa.contaminants$Contaminant[here] <- "CHLORINE DIOXIDE"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "NERVOUS SYSTEM EFFECTS"
+
+
+
+
+
+
+
+
 # Inorganic Chemicals
+
+here <- which(epa.contaminants$Contaminant=="ANTIMONY")
+epa.contaminants$PotentialHealthEffect[here] <- "DECREASE IN BLOOD SUGAR"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "INCREASE IN BLOOD CHOLESTEROL"
+
+
+here <- which(epa.contaminants$Contaminant=="ARSENIC")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "CIRCULATORY PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "SKIN DAMAGE"
+
+
+here <- which(epa.contaminants$Contaminant=="ASBESTOS (FIBER > 10 MICROMETERS)")
+epa.contaminants$PotentialHealthEffect[here] <- "INTESTINAL POLYPS"
+epa.contaminants$Contaminant[here] <- "ASBESTOS"
+
+
 
 # Organic Chemicals
 
