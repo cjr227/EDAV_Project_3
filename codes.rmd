@@ -771,7 +771,128 @@ epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "NERVOUS SYSTE
 
 
 
+here <- which(epa.contaminants$Contaminant=="CHLOROBENZENE")
+epa.contaminants$PotentialHealthEffect[here] <- "KIDNEY PROBLEMS"
 
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "LIVER PROBLEMS"
+
+
+
+here <- which(epa.contaminants$Contaminant=="2,4-D")
+epa.contaminants$PotentialHealthEffect[here] <- "KIDNEY PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "LIVER PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "ADRENAL GLAND PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="DALAPON")
+epa.contaminants$PotentialHealthEffect[here] <- "KIDNEY PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="1,2-DIBROMO-3-CHLOROPROPANE (DBCP)")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+epa.contaminants$Contaminant[here] <- "1,2-DIBROMO-3-CHLOROPROPANE"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "REPRODUCTIVE PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="O-DICHLOROBENZENE")
+epa.contaminants$PotentialHealthEffect[here] <- "CIRCULATORY PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "KIDNEY PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "LIVER PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="P-DICHLOROBENZENE")
+epa.contaminants$PotentialHealthEffect[here] <- "ANEMIA"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "KIDNEY PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "BLOOD PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "LIVER PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "SPLEEN PROBLEMS"
+
+
+
+here <- which(epa.contaminants$Contaminant=="1,2-DICHLOROETHANE")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+
+
+here <- which(epa.contaminants$Contaminant=="1,1-DICHLOROETHYLENE")
+epa.contaminants$PotentialHealthEffect[here] <- "LIVER PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="CIS-1,2-DICHLOROETHYLENE")
+epa.contaminants$PotentialHealthEffect[here] <- "LIVER PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="TRANS-1,2-DICHLOROETHYLENE")
+epa.contaminants$PotentialHealthEffect[here] <- "LIVER PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="DICHLOROMETHANE")
+epa.contaminants$PotentialHealthEffect[here] <- "LIVER PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "CANCER"
+
+
+here <- which(epa.contaminants$Contaminant=="1,2-DICHLOROPROPANE")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+
+
+here <- which(epa.contaminants$Contaminant=="DI(2-ETHYLHEXYL) ADIPATE")
+epa.contaminants$PotentialHealthEffect[here] <- "LIVER PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "REPRODUCTIVE PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "WEIGHT LOSS"
+
+
+
+here <- which(epa.contaminants$Contaminant=="DI(2-ETHYLHEXYL) PHTHALATE")
+epa.contaminants$PotentialHealthEffect[here] <- "CANCER"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "LIVER PROBLEMS"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "REPRODUCTIVE PROBLEMS"
+
+
+
+
+here <- which(epa.contaminants$Contaminant=="DINOSEB")
+epa.contaminants$PotentialHealthEffect[here] <- "REPRODUCTIVE PROBLEMS"
+
+
+here <- which(epa.contaminants$Contaminant=="DIOXIN (2,3,7,8-TCDD)")
+epa.contaminants$PotentialHealthEffect[here] <- "REPRODUCTIVE PROBLEMS"
+epa.contaminants$Contaminant[here] <- "DIOXIN"
+
+epa.contaminants <- rbind(epa.contaminants,epa.contaminants[here,]) # Repeat a row
+epa.contaminants$PotentialHealthEffect[nrow(epa.contaminants)] <- "CANCER"
+
+
+
+here <- which(epa.contaminants$Contaminant=="DIQUAT")
+epa.contaminants$PotentialHealthEffect[here] <- "CATARACTS"
 
 # Radionuclides
 
