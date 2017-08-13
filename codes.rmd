@@ -1179,19 +1179,57 @@ M <- gvisSankey(ContaminantDiseaseCount, from="ContaminantType",
                   sankey="{link:{color:{fill:'lightblue'}}}"
                 ))
 
+# Aggregate disease categories
 disease.hash <- hash()
 disease.hash[['ANEMIA']] <- 'BLOOD PROBLEMS'
-disease.hash[['NOSE IRRITATION']] <- 'CIRCULATORY PROBLEMS'
 disease.hash[['DECREASE IN BLOOD SUGAR']] <- 'BLOOD PROBLEMS'
 disease.hash[['INCREASE IN BLOOD CHOLESTEROL']] <- 'BLOOD PROBLEMS'
+disease.hash[['INCREASE IN BLOOD PRESSURE']] <- 'BLOOD PROBLEMS'
+disease.hash[['HIGH BLOOD PRESSURE']] <- 'BLOOD PROBLEMS'
+disease.hash[['BLUE-BABY SYNDROME']] <- 'BLOOD PROBLEMS'
+
+disease.hash[['NOSE IRRITATION']] <- 'CIRCULATORY PROBLEMS'
+disease.hash[['SHORTNESS OF BREATH']] <- 'CIRCULATORY PROBLEMS'
+disease.hash[['NUMBNESS IN FINGERS OR TOES']] <- 'CIRCULATORY PROBLEMS'
+disease.hash[['LEGIONNAIRE\'S DISEASE']] <- 'CIRCULATORY PROBLEMS'
+
 disease.hash[['SKIN DAMAGE']] <- 'SKIN PROBLEMS'
+disease.hash[['ALLERGIC DERMATITIS']] <- 'SKIN PROBLEMS'
+disease.hash[['SKIN CHANGES']] <- 'SKIN PROBLEMS'
+
 disease.hash[['INTESTINAL POLYPS']] <- 'GASTROINTESTINAL PROBLEMS'
+disease.hash[['INTESTINAL LESIONS']] <- 'GASTROINTESTINAL PROBLEMS'
+disease.hash[['INTESTINE PROBLEMS']] <- 'GASTROINTESTINAL PROBLEMS'
+disease.hash[['STOMACH PROBLEMS']] <- 'GASTROINTESTINAL PROBLEMS'
+disease.hash[['GASTROINTESTINAL DISTRESS']] <- 'GASTROINTESTINAL PROBLEMS'
+disease.hash[['GASTROINTESTINAL ILLNESS']] <- 'GASTROINTESTINAL PROBLEMS'
+
+disease.hash[['NERVOUS SYSTEM DAMAGE']] <- 'NERVOUS SYSTEM EFFECTS'
+
+disease.hash[['THYROID PROBLEMS']] <- 'ENDOCRINE SYSTEM PROBLEMS'
+disease.hash[['CHANGES IN ADRENAL GLANDS']] <- 'ENDOCRINE SYSTEM PROBLEMS'
+disease.hash[['ADRENAL GLAND PROBLEMS']] <- 'ENDOCRINE SYSTEM PROBLEMS'
+disease.hash[['THYMUS GLAND PROBLEMS']] <- 'ENDOCRINE SYSTEM PROBLEMS'
 
 
-EPA_Contaminant_Diseases_Summary <- read.csv(file="data/EPA_Water_Contaminants_Aggregated.csv",
-                                     header=TRUE,sep=",",stringsAsFactors=FALSE)
+disease.hash[['SPLEEN PROBLEMS']] <- 'IMMUNE SYSTEM PROBLEMS'
 
-ContaminantDiseaseCount_Summary <- count(EPA_Contaminant_Diseases_Summary, 
+
+disease.hash[['CATARACTS']] <- 'EYE PROBLEMS'
+
+
+EPA.Contaminant.Diseases.Summary <- epa.contaminants
+
+for(i in 1:nrow(EPA.Contaminant.Diseases.Summary)){
+  temp <- EPA.Contaminant.Diseases.Summary[i,"PotentialHealthEffect"]
+  if(temp %in% keys(disease.hash)){
+    EPA.Contaminant.Diseases.Summary[i,"PotentialHealthEffect"] <- disease.hash[[temp]]
+  }
+  
+}
+
+
+ContaminantDiseaseCount_Summary <- count(EPA.Contaminant.Diseases.Summary, 
                                  c('ContaminantType','PotentialHealthEffect'))
 
 N <- gvisSankey(ContaminantDiseaseCount_Summary, from="ContaminantType", 
@@ -1208,7 +1246,6 @@ op <- options(gvis.plot.tag="chart")
 ```
 
 ```{r results='asis', tidy=TRUE,fig.width=9, fig.height=8}
-#plot(M)
 plot(M)
 ```
 </center>
@@ -1249,11 +1286,12 @@ plot(N)
 
 <center>
 ```{r,fig.width=12, fig.height=8}
-viol$Percent_Pop<-viol$Percent_Pop*100
-viol$Percent_WaterSource<-viol$Percent_WaterSource*100
+viol$Population.CWSs.with.Reported.Health.Based.Violations.Percent <- as.numeric(viol$Population.CWSs.with.Reported.Health.Based.Violations.Percent)*100
+viol$Systems.CWSs.with.Reported.Health.Based.Violations.Percent <- as.numeric(viol$Systems.CWSs.with.Reported.Health.Based.Violations.Percent)*100
 
 
-viol$hover <- with(viol, paste0(Percent_Pop, "%: State Population served by contaminated water systems", "<br>", Percent_WaterSource , "%: Community Water Sources reported to have health violations"))
+viol$hover <- with(viol, paste0(Population.CWSs.with.Reported.Health.Based.Violations.Percent, "%: State Population served by contaminated water systems", "<br>", Systems.CWSs.with.Reported.Health.Based.Violations.Percent , "%: Community Water Sources reported to have health violations"))
+
 # give state boundaries a white border
 l <- list(color = toRGB("white"), width = 2)
 # specify some map projection/options
@@ -1264,11 +1302,24 @@ g <- list(
   lakecolor = toRGB('white')
 )
 
-plot_ly(viol, z = Percent_Pop, text = hover, locations = State, type = 'choropleth',
-        locationmode = 'USA-states', color = Percent_WaterSource, colors = 'Blues',
-        colorbar = list(title = '% of water systems with reported health violations'),
-        marker = list(line = l)) %>%
-  layout(title = 'Water Contamination in States (based on 2010 EPA data)', geo = g)
+
+p <- plot_geo(viol, locationmode = 'USA-states') %>%
+  add_trace(
+    z = ~Population.CWSs.with.Reported.Health.Based.Violations.Percent, 
+    text = ~hover, 
+    locations = ~State,
+    marker = list(line = l),
+    color = ~Systems.CWSs.with.Reported.Health.Based.Violations.Percent, 
+    colors = 'Blues'
+    
+  ) %>%
+  colorbar(title = '% of water systems with reported health violations') %>%
+  layout(title = 'Water Contamination in States (based on 2010 EPA data)', 
+         geo = g
+         )
+  
+
+p
 ```
 </center>
 
@@ -1289,15 +1340,15 @@ plot_ly(viol, z = Percent_Pop, text = hover, locations = State, type = 'chorople
 
 <center>
 ```{r,fig.width=10, fig.height=8}
-UCMR = read.csv("data/UCMR_cleaned.csv")
-df = UCMR[ which(UCMR$Contaminant=='PFOA'), ]
-df = na.omit(df)
+UCMR <- read.csv("data/UCMR_cleaned.csv")
+df <- UCMR[ which(UCMR$Contaminant=='PFOA'), ]
+df <- na.omit(df)
 
-library(plotly)
+
 df$hover <- with(df, paste(city, ",", state, " / PFOA =", AnalyticalResultValue))
 
-plot_ly(df, lat = latitude, lon = longitude, 
-        text = hover,
+plot_ly(df, lat = ~latitude, lon = ~longitude, 
+        text = ~hover,
         type = 'scattergeo', 
         locationmode = 'USA-states', 
         mode = 'markers',
@@ -1305,7 +1356,7 @@ plot_ly(df, lat = latitude, lon = longitude,
                       size = 18, 
                       opacity = 0.7, 
                       symbol = 'circle'), 
-        color = AnalyticalResultValue) %>%
+        color = ~AnalyticalResultValue) %>%
   layout(title = 'Water Contaminated by POFA<br>EPA 2012-16', 
          geo = list(scope = 'usa', 
                     projection = list(type = 'albers usa'), 
@@ -1340,16 +1391,24 @@ UCMR9 <- data.frame(
 UCMR$id <- as.integer(factor(UCMR$Contaminant))
 UCMR <- na.omit(UCMR)
 
-p <- plot_ly(UCMR, type = 'scattergeo', lon = longitude, lat = latitude, group = Contaminant,
+p <- UCMR %>%
+  group_by(Contaminant) %>%
+  plot_ly(type = 'scattergeo', lon = ~longitude, lat = ~latitude, 
              geo = paste0("geo", id), showlegend = F,
-             marker = list(opacity = 1)) %>%
-  add_trace(lon = -78, lat = 47, mode = 'text', group = Contaminant, type = 'scattergeo', showlegend = F,
-            geo = paste0("geo", id), text = Contaminant, data = UCMR9) %>%
+             marker = list(opacity = 1),
+          mode = "markers") %>%
+  add_trace(lon = -78, lat = 47, mode = 'text', 
+            #group = ~Contaminant, 
+            type = 'scattergeo',
+            showlegend = F,
+            geo = paste0("geo", id),
+            text = ~Contaminant, 
+            data = UCMR) %>%
   layout(title = 'Unregulated Drinking Water PFC Contaminants<br>EPA 2012-16',
          geo = g,
          autosize = F,
-         width = 1000,
-         height = 900,
+         #width = 1000,
+         #height = 900,
          hovermode = F)
 
 subplot(p, nrows = 3)
