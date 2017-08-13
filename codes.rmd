@@ -1391,27 +1391,40 @@ UCMR9 <- data.frame(
 UCMR$id <- as.integer(factor(UCMR$Contaminant))
 UCMR <- na.omit(UCMR)
 
+
+
+
+
+# common map properties
+g <- list(
+  scope = 'usa',
+  showland = T,
+  landcolor = toRGB("gray90"),
+  showcountries = F,
+  subunitcolor = toRGB("white")
+)
+
+one_map <- function(dat) {
+  plot_geo(dat) %>%
+    add_markers(x = ~longitude, y = ~latitude, color = ~Contaminant, alpha = 0.5) %>%
+    add_text(x = -78, y = 47, text = ~unique(Contaminant), color = I("black")) %>%
+    layout(geo = g)
+}
+
 p <- UCMR %>%
   group_by(Contaminant) %>%
-  plot_ly(type = 'scattergeo', lon = ~longitude, lat = ~latitude, 
-             geo = paste0("geo", id), showlegend = F,
-             marker = list(opacity = 1),
-          mode = "markers") %>%
-  add_trace(lon = -78, lat = 47, mode = 'text', 
-            #group = ~Contaminant, 
-            type = 'scattergeo',
-            showlegend = F,
-            geo = paste0("geo", id),
-            text = ~Contaminant, 
-            data = UCMR) %>%
-  layout(title = 'Unregulated Drinking Water PFC Contaminants<br>EPA 2012-16',
-         geo = g,
-         autosize = F,
-         #width = 1000,
-         #height = 900,
-         hovermode = F)
+  do(map = one_map(.)) %>%
+  subplot(nrows = 3) %>%
+  layout(
+    showlegend = FALSE,
+    title = 'Unregulated Drinking Water PFC Contaminants<br>EPA 2012-16',
+    #width = 1000,
+    #height = 900,
+    hovermode = FALSE
+  )
 
-subplot(p, nrows = 3)
+
+p
 ```
 </center>
 
